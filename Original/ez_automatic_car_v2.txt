@@ -1,4 +1,4 @@
-@name EZ Car v2
+@name EZ Automatic Car v2
 @inputs Speedometer Forward Reverse LightBreak HardBreak
 @outputs Gear Speed Breaks EngineActive Throttle
 
