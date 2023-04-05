@@ -14,7 +14,7 @@ Gear2Change = 10
 Gear3Change = 28
 Gear4Change = 48
 Gear5Change = 67
-Gear6Change = 
+Gear6Change = 200
 Gear7Change = 200
 Gear8Change = 200
 
