@@ -1,0 +1,12 @@
+@name EZ Reverse
+@inputs Reversing CurrentGear
+@outputs Gear
+
+ReverseGear = 6
+
+if (Reversing == 1) {
+    Gear = ReverseGear
+}
+else {
+    Gear = 1
+}
