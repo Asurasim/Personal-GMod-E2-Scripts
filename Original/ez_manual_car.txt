@@ -1,4 +1,4 @@
-@name EZ Manual Car v2
+@name EZ Manual Car
 @inputs Speedometer Forward Reverse LightBreak HardBreak Ratio CurrentGear
 @outputs Gear Speed Breaks EngineActive Throttle
 
