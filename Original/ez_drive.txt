@@ -1,15 +1,8 @@
 @name EZ Drive
-@inputs W S CurrentGear
-@outputs Gear Throttle
+@inputs W S
+@outputs Throttle Reversing
 
-ReverseGear = 6
-LastGear = 1
-
-
-
-if (LastGear != ReverseGear) {
-    LastGear = CurrentGear
-}
+ReverseGear = 9
 
 if ((S == 0) && (W==0))  {
     Throttle = 0
@@ -18,10 +11,9 @@ else {
     Throttle = 100
 }
 
-
-if (S == 1) {
-    Gear = ReverseGear
+if ((S == 1) && (W==0)) {
+    Reversing = 1
 }
 else {
-    Gear = LastGear
+    Reversing = 0
 }

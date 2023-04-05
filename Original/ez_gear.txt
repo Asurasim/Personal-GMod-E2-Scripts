@@ -1,5 +1,5 @@
 @name EZ Gear
-@inputs Speed
+@inputs Speed Reversing
 @outputs SetGear SpeedRnd
 
 SpeedRnd = round(Speed)
@@ -14,38 +14,43 @@ Gear6Change = 200
 Gear7Change = 200
 Gear8Change = 200
 
-if (MaxGears >= 4) {
-    if (SpeedRnd < Gear2Change) {
-        SetGear = 1
+if (Reversing == 0) {
+    if (MaxGears >= 4) {
+        if (SpeedRnd < Gear2Change) {
+            SetGear = 1
+        }
+        if (SpeedRnd >= Gear2Change) {
+            SetGear = 2
+        }
+        if (SpeedRnd >= Gear3Change) {
+            SetGear = 3
+        }
     }
-    if (SpeedRnd >= Gear2Change) {
-        SetGear = 2
+
+    if (MaxGears >= 6) {
+        if (SpeedRnd >= Gear4Change) {
+            SetGear = 4
+        }
+        if (SpeedRnd >= Gear5Change) {
+            SetGear = 5
+        }
     }
-    if (SpeedRnd >= Gear3Change) {
-        SetGear = 3
+
+    if (MaxGears >= 8) {
+        if (SpeedRnd >= Gear6Change) {
+            SetGear = 6
+        }
+        if (SpeedRnd >= Gear7Change) {
+            SetGear = 7
+        }
+    }
+
+    if (MaxGears >= 9) {
+        if (SpeedRnd >= Gear8Change) {
+            SetGear = 8
+        }
     }
 }
-
-if (MaxGears >= 6) {
-    if (SpeedRnd >= Gear4Change) {
-        SetGear = 4
-    }
-    if (SpeedRnd >= Gear5Change) {
-        SetGear = 5
-    }
-}
-
-if (MaxGears >= 8) {
-    if (SpeedRnd >= Gear6Change) {
-        SetGear = 6
-    }
-    if (SpeedRnd >= Gear7Change) {
-        SetGear = 7
-    }
-}
-
-if (MaxGears >= 9) {
-    if (SpeedRnd >= Gear8Change) {
-        SetGear = 8
-    }
+else {
+    SetGear = MaxGears
 }
