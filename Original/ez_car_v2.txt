@@ -1,0 +1,62 @@
+@name EZ Car v2
+@inputs Speedometer Forward Reverse LightBreak HardBreak
+@outputs Gear Speed Breaks EngineActive Throttle
+
+
+
+# Adjustable Values
+GearChange = array(10,20,48,67,200,200,200,200)
+ReverseGear = 9
+
+
+
+# Fixed Values
+Speed = round(Speedometer)
+BreakInput = LightBreak + HardBreak
+
+
+
+# Auto Gears script
+if ((Forward == 1) && (Reverse == 0) && (BreakInput == 0)) {
+    Throttle = 100
+    if (Speed < GearChange[1, number]) {
+        Gear = 1
+    }
+    else {
+        foreach(K, I:number = GearChange) {
+            if (Speed >= I) {
+                Gear = K
+            }
+        }
+    }
+}
+
+if ((Reverse == 1) && (Forward == 0) && (BreakInput == 0)) {
+    Gear = ReverseGear
+    Throttle = 100
+}
+
+if ((Forward == 0) && (Reverse == 0) && (BreakInput == 0)) {
+    Throttle = 0
+}
+
+
+
+# Breaking Script
+if (HardBreak == 1) {
+    Breaks = 20
+}
+else {
+    Breaks = LightBreak
+}
+
+
+
+# Basically turns the car off if it's almost still
+if ((BreakInput != 0) && (Speed < 2)) {
+    Gear = 0
+    Throttle = 0
+}
+elseif ((Forward == 1) || (Reverse == 1)) {
+    EngineActive = 1
+}
