@@ -1,4 +1,4 @@
-@name EZ Gear Change
+@name EZ Gear
 @inputs Speed
 @outputs SetGear SpeedRnd
 
@@ -47,4 +47,5 @@ if (MaxGears >= 8) {
 if (MaxGears >= 9) {
     if (SpeedRnd >= Gear8Change) {
         SetGear = 8
+    }
 }
