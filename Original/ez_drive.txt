@@ -2,8 +2,6 @@
 @inputs W S
 @outputs Throttle Reversing
 
-ReverseGear = 9
-
 if ((S == 0) && (W==0))  {
     Throttle = 0
 }
