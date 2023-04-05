@@ -11,7 +11,7 @@ if (LastGear != ReverseGear) {
     LastGear = CurrentGear
 }
 
-if ((S == 0) || (W==0))  {
+if ((S == 0) && (W==0))  {
     Throttle = 0
 }
 else {
