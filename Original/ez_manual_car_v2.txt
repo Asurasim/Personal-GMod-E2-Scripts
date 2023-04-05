@@ -1,0 +1,59 @@
+@name EZ Manual Car v2
+@inputs Speedometer Forward Reverse LightBreak HardBreak Ratio CurrentGear
+@outputs Gear Speed Breaks EngineActive Throttle
+
+
+
+# Adjustable Values
+ReverseGear = 6
+
+# Fixed Values
+Speed = round(Speedometer)
+BreakInput = LightBreak + HardBreak
+SwappingBackToForward = 1
+
+
+# Manual Gears Script
+if ((Reverse == 0) && (Forward == 1) && (BreakInput == 0)) {
+    Throttle = 100
+    if (SwappingBackToForward == 1) {
+        Gear = 1
+        SwappingBackToForward = 0
+    }
+    else {
+    if (CurrentGear == ReverseGear) {
+    Gear = CurrentGear - 1
+    }}
+}
+
+
+if ((Reverse == 1) && (Forward == 0) && (BreakInput == 0)) {
+    SwappingBackToForward = 1
+    Gear = ReverseGear
+    Throttle = 100
+}
+
+if ((Forward == 0) && (Reverse == 0) && (BreakInput == 0)) {
+    Throttle = 0
+}
+
+
+
+# Breaking Script
+if (HardBreak == 1) {
+    Breaks = 20
+}
+else {
+    Breaks = LightBreak
+}
+
+
+
+# Basically turns the car off if it's almost still
+if ((BreakInput != 0) && (Speed < 2)) {
+    Gear = 0
+    Throttle = 0
+}
+elseif ((Forward == 1) || (Reverse == 1)) {
+    EngineActive = 1
+}
