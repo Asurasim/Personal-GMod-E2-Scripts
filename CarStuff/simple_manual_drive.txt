@@ -3,12 +3,15 @@
 @outputs Gear Throttle Brake Constant Damping Red MPHrounded KPHrounded
 
 
-
+# Adjustable Values
 Constant = 50000
 Damping = 500
 RPMLight = 1750
+BrakeForce = 5
 
 
+
+# Literally everything you *probably* shouldn't touch
 
 MPHrounded = round(MPH)
 KPHrounded = round(KPH)
@@ -16,7 +19,7 @@ KPHrounded = round(KPH)
 
 
 if (Shift == 1) {
-    Brake = 5
+    Brake = BrakeForce
 }
 elseif (Space == 1) {
     Brake = 1
