@@ -1,0 +1,93 @@
+@name Automatic Car v3
+@inputs MPH W S Space Mouse1
+@outputs Gear Speed Break Throttle Constant Damping
+
+
+
+# Adjustable Values
+ShiftSpeed = array(1,25,50,75,100,125,150,175)
+Constant = 50000
+Damping = 500
+
+
+
+# Reverse Gear
+ReverseGear = 0
+
+foreach(K, _:number = ShiftSpeed) {
+    ReverseGear += K
+}
+
+
+
+# Speedometer
+Speed = round(MPH)
+
+
+
+# Breaks
+if (Mouse1 == 1) {
+    Break = 5
+}
+elseif (Space == 1) {
+    Break = 1
+}
+else {
+    Break = 0
+}
+
+
+
+# Movement Input
+if (Break != 0) {
+    Dir = 0
+}
+elseif (W == 1) {
+    Dir = 1
+}
+elseif (S == 1) {
+    Dir = -1
+}
+else {
+    Dir = 0
+}
+
+
+
+# Throttle
+if (Dir == 1) {
+    Throttle = 100
+}
+if (Dir == -1) {
+    Throttle = 100
+}
+if (Dir == 0) {
+    Throttle = 0
+}
+
+
+
+# Gear Shifting
+if (Dir == 1) {
+    if (Speed == 0) {
+        Gear = 1
+    }
+    foreach(K, I:number = ShiftSpeed) {
+        if (Speed >= I) {
+            Gear = K
+        }
+    }
+}
+if (Dir == -1) {
+    Gear = ReverseGear
+}
+
+
+
+# Stops the car
+if (Break >= 1) {
+    Throttle = 0
+    if (Speed <= 1) {
+        Gear = 0
+    }
+}

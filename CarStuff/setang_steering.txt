@@ -1,11 +1,8 @@
 @name Setang Steering
-@inputs W A D CHASSIS:entity
-@outputs Constant Damping
+@inputs A D CHASSIS:entity
 @persist SLAVE:entity [TURN_RATE TURN_ANGLE TURN] B C
 @model models/sprops/rectangles/size_2_5/rect_18x18x3.mdl
- 
-Constant = 50000
-Damping = 500
+
 if (dupefinished()) {reset()}
  
 B = round(toUnit("km/h",CHASSIS:vel():length()))

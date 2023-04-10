@@ -1,0 +1,35 @@
+@name 321Go
+@inputs Run
+@outputs A B C Course
+
+Run = 0
+Timers = array("a","b","c","d")
+Delays = array(1000,2000,3000,5000)
+A = 0
+B = 0
+C = 0
+
+runOnChat(1)
+if(chatClk() ){
+if(lastSaid() == "Start"){
+Run = 1
+}}
+
+if (Run == 1) {
+    foreach(K, I:string = Timers) {
+        stoptimer(I)
+        timer(I,Delays[K,number])
+    }
+}
+
+if (clk("a")){
+    A = 255
+}
+if(clk("b")){
+    B = 255
+}
+if(clk("c")){
+    A = 255
+    B = 255
+    C = 255
+}

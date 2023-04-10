@@ -5,7 +5,7 @@
 
 
 # Adjustable Values
-GearChange = array(10,20,48,67,200,200,200,200)
+GearChange = array(5,28,52,60,200,200,200,200)
 ReverseGear = 9
 
 
@@ -44,7 +44,7 @@ if ((Forward == 0) && (Reverse == 0) && (BreakInput == 0)) {
 
 # Breaking Script
 if (HardBreak == 1) {
-    Breaks = 20
+    Breaks = 10
 }
 else {
     Breaks = LightBreak
