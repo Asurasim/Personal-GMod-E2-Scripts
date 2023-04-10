@@ -1,0 +1,83 @@
+@name Simple Manual Drive
+@inputs W S MPH KPH RPM Shift Space
+@outputs Gear Throttle Brake Constant Damping Red MPHrounded KPHrounded
+
+
+
+Constant = 50000
+Damping = 500
+RPMLight = 1750
+
+
+
+MPHrounded = round(MPH)
+KPHrounded = round(KPH)
+
+
+
+if (Shift == 1) {
+    Brake = 5
+}
+elseif (Space == 1) {
+    Brake = 1
+}
+else {
+    Brake = 0
+}
+
+
+
+if (Brake != 0) {
+    Dir = 0
+    LastDir = 0
+}
+elseif (W == 1) {
+    Dir = 1
+}
+elseif (S == 1) {
+    Dir = -1
+    LastDir = -1
+}
+else {
+    Dir = 0
+    LastDir = 0
+}
+
+
+
+if (Dir == 0) {
+    Throttle = 0
+}
+else {
+    Throttle = 100
+}
+
+
+
+if (Dir == 1) {
+    if (LastDir != 1) {
+        Gear = 1
+        LastDir = 1
+    }
+}
+if (Dir == -1) {
+    Gear = 9
+}
+
+
+
+if (Brake >= 1) {
+    Throttle = 0
+    if ((MPHrounded <= 1) || (KPHrounded <= 1)) {
+        Gear = 0
+    }
+}
+
+
+
+if (RPM >= RPMLight) {
+Red = 255
+}
+else {
+Red = 0
+}
