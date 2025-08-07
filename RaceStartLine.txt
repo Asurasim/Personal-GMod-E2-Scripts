@@ -1,4 +1,4 @@
-@name 321Go
+@name Race Start Line (3 2 1 GO)
 @inputs Run
 @outputs A B C Course
 

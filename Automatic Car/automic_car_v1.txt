@@ -1,4 +1,4 @@
-@name EZ Gear
+@name Automatic Car v1
 @inputs Speed Reversing BreakInput ForwardInput HardBreak
 @outputs SetGear SpeedRnd BreakOutput
 

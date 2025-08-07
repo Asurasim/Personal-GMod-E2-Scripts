@@ -1,0 +1,211 @@
+@name all_cool_v1
+@inputs W A S D Mouse1 Mouse2 Shift Space RPM CHASSIS:entity
+@outputs Gear Throttle Brake Constant Damping Red Speed
+@persist SLAVE:entity [TURN_RATE TURN_ANGLE TURN] Speed C Triggered LastGear LastDirection GearChanged
+@model models/sprops/rectangles/size_2_5/rect_18x18x3.mdl
+
+
+
+# Set to the engines Redline value
+Redline = 5860
+
+# Adjusts the strength of the brakes
+BrakingForce = 100
+
+# Adjust if suspension is too bouncy or too tight
+Constant = 50000
+Damping = 500
+
+# 9 basically just sets it to max on any gearbox
+# This means it will always set to final gear, and you can avoid it
+ReversingGear = 8
+
+
+
+############
+# THE CODE #
+############
+
+function number throttle(Inputs:array) {
+    Throttle = 0
+    foreach(K:number, Input:number = Inputs) {
+        if (Input == 1) {
+            Throttle = 100
+            return Throttle
+        }
+    }
+    return 0
+}
+
+function array autoReverse(ForwardInput:number, BackwardInput:number, Gear:number, ReversingGear:number, LastDirection:number) {
+    if (ForwardInput == 1 && LastDirection <= 0) {
+        if (Gear == 0 || Gear == ReversingGear) {
+           Gear = 1
+        }
+        LastDirection = 1
+    }
+    if (BackwardInput == 1) {
+        LastDirection = -1
+        Gear = ReversingGear
+    }
+    return array(Gear, LastDirection)
+}
+
+# Lock car in place if speed is low and brakes are held
+function number brakeAutoReleaseOnLowSpeed(Brake:number, Speed:number, Gear:number) {
+    if (Brake >= 1 && Speed <= 1) {
+        Gear = 0
+        return Gear
+    }
+    return Gear
+}
+
+function number brakeStopsThrottle(Throttle:number, Brake:number) {
+    if (Brake >= 1) {
+        Throttle = 0
+    }
+    return Throttle
+}
+
+function number brakeWithForce(Input:number, BrakingForce:number, Brake:number) {
+    if (Input == 1) {
+        return BrakingForce
+    }
+    return Brake
+}
+
+# Redline Light (Actually the Power RPM Limit but Redline sounds cooler)
+function number redLineAlert(RPM:number, Redline:number) {
+    if (RPM >= Redline) {
+        MaxRGB = 255
+        return MaxRGB
+    }
+    else {
+        MinRGB = 0
+        return MinRGB
+    }
+}
+
+function number gearBoundCheck(Gear:number, Bound:number, Correction:number) {
+    if (Gear == Bound) {
+        Gear += Correction
+    }
+    return Gear
+}
+
+function number hasGearInputReleased(GearUp:number, GearDown:number, GearChanged) {
+    if (GearUp == 0 && GearDown == 0) {
+        GearChanged = 0
+    }
+    return GearChanged
+}
+
+function number adjustGear(GearUp:number, GearDown:number, Gear:number, GearChanged:number, ReversingGear:number) {
+    
+    if (GearUp == 1 && GearDown == 1) {
+        return Gear
+    }
+    
+    if (GearUp == 1 && GearChanged == 0) {
+        Gear += 1
+        
+        Correction = -1
+        Bound = ReversingGear
+        Gear = gearBoundCheck(Gear, Bound, Correction)
+    }
+    
+    if (GearDown == 1 && GearChanged == 0) {
+        Gear -= 1
+        
+        Correction = 1
+        Bound = 0
+        Gear = gearBoundCheck(Gear, Bound, Correction)
+        
+        # This one is separate so while in neutral, you cant go lower
+        # which means you also cant go into neutral while driving
+        Correction = 1
+        Bound = -1
+        Gear = gearBoundCheck(Gear, Bound, Correction)
+    }
+    
+    return Gear
+}
+
+function number setAng(A:number, D:number, B:number,TURN_ANGLE:number,TURN:number,TURN_RATE:number) {
+    if (dupefinished()) {reset()}
+    
+    B = round(toUnit("km/h",CHASSIS:vel():length()))
+
+    if(B >= 20)  {
+        TURN_ANGLE = 25
+    }
+    else
+    {
+        TURN_ANGLE = 45
+    }
+    
+    if (first())    {
+        interval(20)
+
+        SLAVE = entity()
+    } elseif (clk())    {
+        interval(20)
+    
+        if (!SLAVE:isPlayerHolding())    {
+            TURN += clamp((A-D)*TURN_ANGLE - TURN, -TURN_RATE, TURN_RATE)
+            SLAVE:setAng( CHASSIS:toWorld(ang(0, TURN, 0)) )
+            SLAVE:propFreeze(1)
+        }
+    }
+    
+    return TURN
+}
+
+
+#############
+# THE LOGIC #
+#############
+
+# Speedometer
+Speed = round((toUnit("km/h",CHASSIS:vel():length())) / 1.609)
+
+# Resets values so they can be released
+Throttle = 0
+Brake = 0
+
+if (Gear == 0) {
+    LastDirection = 0   
+}
+
+GearChanged = hasGearInputReleased(Mouse1, Mouse2, GearChanged)
+
+PreviousGear = Gear
+Gear = adjustGear(Mouse1, Mouse2, Gear, GearChanged, ReversingGear)
+
+if (PreviousGear != Gear) {
+    GearChanged = 1
+}
+
+TempArray = autoReverse(W,S,Gear,ReversingGear,LastDirection)
+LastDirection = TempArray:popNumber()
+Gear = TempArray:popNumber()
+
+# Soft Brakes
+BrakingForce = 5
+Brake = brakeWithForce(Space, BrakingForce, Brake)
+
+# Hard Brakes
+BrakingForce = 50
+Brake = brakeWithForce(Shift, BrakingForce, Brake)
+
+Throttle = throttle(array(W,S))
+
+Throttle = brakeStopsThrottle(Throttle, Brake)
+Gear = brakeAutoReleaseOnLowSpeed(Brake, Speed, Gear)
+
+# Turns on the light when the RPM reaches the Redline
+Red = redLineAlert(RPM,Redline)
+
+# Enables turning when holding A or D
+TURN_RATE = 5
+TURN = setAng(A,D,Speed,TURN_ANGLE,TURN,TURN_RATE)

@@ -1,7 +1,0 @@
-@name Horn
-@inputs A
-@outputs Reset
-
-while(A >= 50) {
-    return Reset = 1
-}

@@ -1,4 +1,4 @@
-@name Simple Manual Drive
+@name all_cool_v0
 @inputs W S MPH KPH RPM Shift Space
 @outputs Gear Throttle Brake Constant Damping Red MPHrounded KPHrounded
 
